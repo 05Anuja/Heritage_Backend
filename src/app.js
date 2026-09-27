@@ -23,9 +23,9 @@ app.use(
 );
 
 // Product Routes
-app.use('api/product', productRoute)
+app.use('/api/products', productRoute)
 
-app.get("/", (req, res) => {
+app.get("/api/health", (req, res) => {
     res.json({ message: "Welcome to HRMS API" });
 });
 

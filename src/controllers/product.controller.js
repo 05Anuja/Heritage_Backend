@@ -1,3 +1,4 @@
+import { cloudinary } from "../config/cloudinary.js";
 import Product from "../models/Product.js";
 
 // Get All Products
@@ -77,20 +78,114 @@ export const getProductByCategory = async (req, res) => {
 }
 
 // CREATE product
-export const createProduct = async (req, res) => {
+export const addProduct = async (req, res) => {
     try {
-        const product = await Product.create(req.body);
+        const {
+            name,
+            category,
+            description,
+            material,
+            flair,
+            blouse,
+            dupatta,
+            features,
+            featured,
+            active,
+        } = req.body;
 
-        res.status(201).json({
-            success: true,
+        // validate fields
+        if (!name || !category) {
+            return res.status(400).json({
+                message: "Name and category are required",
+            });
+        }
+
+        // convert image to array and validate
+        if (!req.files || req.files.length === 0) {
+            return res.status(400).json({
+                message: "At least one product image is required",
+            });
+        }
+
+        // convert features to array
+        let productFeatures = [];
+
+        if (features) {
+            if (Array.isArray(features)) {
+                productFeatures = features;
+            } else {
+                productFeatures = [features];
+            }
+        }
+
+        // convert featured to boolean
+        const isFeatured = featured === "true";
+
+
+        // convert active to boolean
+        const isActive = active === undefined
+            ? true
+            : active === "true";
+
+        // Upload images to Cloudinary
+        const imageUrls = [];
+
+        for (const file of req.files) {
+
+            const result = await new Promise((resolve, reject) => {
+
+                const uploadStream =
+                    cloudinary.uploader.upload_stream(
+                        {
+                            folder: "heritage_bharat/products",
+                        },
+                        (err, result) => {
+
+                            if (err) {
+                                return reject(err);
+                            }
+
+                            return resolve(result);
+                        }
+                    );
+
+                uploadStream.end(file.buffer);
+            });
+
+            imageUrls.push(result.secure_url);
+        }
+
+        // create product
+        const product = await Product.create({
+            name,
+            category,
+            description,
+            material,
+            flair,
+            blouse,
+            dupatta,
+
+            features: productFeatures,
+
+            images: imageUrls,
+
+            featured: isFeatured,
+
+            active: isActive,
+        });
+
+        // response
+        return res.status(201).json({
             message: "Product created successfully",
             product,
         });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: "Failed to create product",
-            error: error.message,
+
+    } catch (err) {
+
+        console.error("Create Product Error:", err);
+
+        return res.status(500).json({
+            message: err.message,
         });
     }
 };
