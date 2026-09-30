@@ -299,3 +299,46 @@ export const updateProduct = async (req, res) => {
         });
     }
 };
+
+// delete all products
+export const deletAllProducts = async (req, res) => {
+    try {
+        const products = await Product.find();
+
+        if(!products || products.length === 0) {
+            return res.status(404).json({
+                message: "Product Not Found"
+            })
+        }
+
+        await Product.deleteMany({});
+
+        console.log("Products deleted successfully");
+        return res.status(200).json({
+            message:"Products deleted successfully"
+        });
+    } catch(err) {
+        console.log("DeleteAll Error")
+        return res.status(500).json({
+            message: err.message,
+        })
+    }
+}
+
+// delete single product
+export const deleteProduct = async (req, res) => {
+    const {id} = req.params;
+    // console.log(id)
+    const product = await Product.findById(id);
+
+    if (!product) {
+        return res.status(404).json({
+            message: "Product Not Found"
+        });
+    }
+    await Product.findByIdAndDelete(id);
+    console.log("Product deleted successfully");
+    return res.status(200).json({
+        message:"Product deleted successfully"
+    });
+}
