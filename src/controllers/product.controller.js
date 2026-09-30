@@ -57,7 +57,7 @@ export const getProductById = async (req, res) => {
 // Get product by category
 export const getProductByCategory = async (req, res) => {
     try {
-        const { category } = req.params.category;
+        const { category } = req.params;
         const product = await Product.find({
             category: category,
             active: true,
@@ -301,7 +301,7 @@ export const updateProduct = async (req, res) => {
 };
 
 // delete all products
-export const deletAllProducts = async (req, res) => {
+export const deleteAllProducts = async (req, res) => {
     try {
         const products = await Product.find();
 

@@ -1,5 +1,5 @@
 import express from "express";
-import { addProduct, deletAllProducts, deleteProduct, getProductByCategory, getProductById, getProducts, updateProduct } from "../controllers/product.controller.js";
+import { addProduct, deleteAllProducts, deleteProduct, getProductByCategory, getProductById, getProducts, updateProduct } from "../controllers/product.controller.js";
 // import { UploadStream } from "cloudinary";
 import upload from '../middleware/uploadMiddleware.js'
 
@@ -11,6 +11,6 @@ router.get('/:category', getProductByCategory)
 router.post('/add-product', upload.array('images', 5), addProduct)
 router.patch('/update-product/:id', upload.array('images', 5),updateProduct)
 router.delete('/delete-product/:id', deleteProduct)
-router.delete('/delete-all', deletAllProducts)
+router.delete('/delete-all', deleteAllProducts)
 
 export default router;
