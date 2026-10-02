@@ -4,7 +4,8 @@ import cors from "cors";
 dotenv.config();
 import connectDB from "../src/config/db.js";
 import connectCloudinary from "./config/cloudinary.js";
-import productRoute from '../src/routes/productRoute.js'
+import productRoute from '../src/routes/product.route.js'
+import enquiryRoute from '../src/routes/enquiry.route.js'
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use(
 
 // Product Routes
 app.use('/api/products', productRoute)
+app.use('/api/enquiries', enquiryRoute)
 
 app.get("/api/health", (req, res) => {
     res.json({ message: "Welcome to HRMS API" });
