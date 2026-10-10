@@ -21,9 +21,32 @@ export const createEnquiry = async (req, res) => {
         });
     } catch (err) {
         console.log("Enquiry Error")
+        console.log(err)
         return res.status(500).json({
             success: false,
-            message: "Enquiry creation failed"
+            message: "Enquiry creation failed",
+            error: err.message
+        })
+    }
+}
+
+export const getEnquiry = async (req, res) => {
+    try {
+        const enquiry = await Enquiry.find().sort({ createdAt: -1 })
+        console.log("Enquiry fetched successfully!", enquiry);
+
+        res.status(200).json({
+            success: true,
+            message: "Enquiry fetched successfully",
+            count: enquiry.length,
+            enquiry,
+        })
+    } catch (err) {
+        console.log("Get Enquiry Error");
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch enquiry",
+            error: err.message,
         })
     }
 }
