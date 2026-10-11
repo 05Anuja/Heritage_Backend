@@ -1,40 +1,56 @@
+
+import "dotenv/config";
 import express from "express";
-import dotenv from "dotenv";
-dotenv.config();
 import cors from "cors";
-import connectDB from "../src/config/db.js";
+
 import connectCloudinary from "./config/cloudinary.js";
-import productRoutes from '../src/routes/product.route.js'
-import enquiryRoutes from '../src/routes/enquiry.route.js'
-import authRoutes from '../src/routes/auth.routes.js'
+import productRoutes from "./routes/product.route.js";
+import enquiryRoutes from "./routes/enquiry.route.js";
+import authRoutes from "./routes/auth.routes.js";
 
 const app = express();
 
-connectDB();
+// Connect Cloudinary
 connectCloudinary();
 
+// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Enable CORS
+// CORS configuration
+const allowedOrigins = [
+    process.env.PUBLIC_FRONTEND_URL,
+    process.env.ADMIN_FRONTEND_URL,
+].filter(Boolean);
+
 app.use(
     cors({
-        origin: true,
-        credentials: true,
-    }),
+        origin: (origin, callback) => {
+            // Allow requests without an Origin header, such as server-to-server requests
+            if (!origin || allowedOrigins.includes(origin)) {
+                return callback(null, true);
+            }
+
+            return callback(new Error("Origin not allowed by CORS"));
+        },
+    })
 );
 
-// Product Routes
-app.use('/api/products', productRoutes)
+// Product routes
+app.use("/api/products", productRoutes);
 
-// Enquiry Routes
-app.use('/api/enquiries', enquiryRoutes)
+// Enquiry routes
+app.use("/api/enquiries", enquiryRoutes);
 
-// Admin Routes
-app.use("/api/auth", authRoutes)
+// Admin authentication routes
+app.use("/api/auth", authRoutes);
 
+// Health check
 app.get("/api/health", (req, res) => {
-    res.json({ message: "Welcome to HRMS API" });
+    res.status(200).json({
+        success: true,
+        message: "Heritage Backend is running",
+    });
 });
 
 export default app;
