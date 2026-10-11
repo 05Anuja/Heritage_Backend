@@ -1,11 +1,12 @@
 import express from "express";
 import dotenv from "dotenv";
-import cors from "cors";
 dotenv.config();
+import cors from "cors";
 import connectDB from "../src/config/db.js";
 import connectCloudinary from "./config/cloudinary.js";
-import productRoute from '../src/routes/product.route.js'
-import enquiryRoute from '../src/routes/enquiry.route.js'
+import productRoutes from '../src/routes/product.route.js'
+import enquiryRoutes from '../src/routes/enquiry.route.js'
+import authRoutes from '../src/routes/auth.routes.js'
 
 const app = express();
 
@@ -24,8 +25,13 @@ app.use(
 );
 
 // Product Routes
-app.use('/api/products', productRoute)
-app.use('/api/enquiries', enquiryRoute)
+app.use('/api/products', productRoutes)
+
+// Enquiry Routes
+app.use('/api/enquiries', enquiryRoutes)
+
+// Admin Routes
+app.use("/api/auth", authRoutes)
 
 app.get("/api/health", (req, res) => {
     res.json({ message: "Welcome to HRMS API" });
