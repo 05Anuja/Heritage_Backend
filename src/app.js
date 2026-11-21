@@ -7,6 +7,7 @@ import connectCloudinary from "./config/cloudinary.js";
 import productRoutes from "./routes/product.route.js";
 import enquiryRoutes from "./routes/enquiry.route.js";
 import authRoutes from "./routes/auth.routes.js";
+import dashboardRoutes from './routes/dashboard.routes.js'
 
 const app = express();
 
@@ -27,6 +28,9 @@ app.use("/api/enquiries", enquiryRoutes);
 
 // Admin authentication routes
 app.use("/api/auth", authRoutes);
+
+// Dashboard routes
+app.use("/api/dashboard", dashboardRoutes)
 
 // Health check
 app.get("/api/health", (req, res) => {
