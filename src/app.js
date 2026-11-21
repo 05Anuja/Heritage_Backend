@@ -16,25 +16,8 @@ connectCloudinary();
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors())
 
-// CORS configuration
-const allowedOrigins = [
-    process.env.PUBLIC_FRONTEND_URL,
-    process.env.ADMIN_FRONTEND_URL,
-].filter(Boolean);
-
-app.use(
-    cors({
-        origin: (origin, callback) => {
-            // Allow requests without an Origin header, such as server-to-server requests
-            if (!origin || allowedOrigins.includes(origin)) {
-                return callback(null, true);
-            }
-
-            return callback(new Error("Origin not allowed by CORS"));
-        },
-    })
-);
 
 // Product routes
 app.use("/api/products", productRoutes);
