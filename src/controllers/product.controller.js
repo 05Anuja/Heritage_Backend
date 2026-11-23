@@ -4,9 +4,7 @@ import Product from "../models/Product.js";
 // Get All Products
 export const getProducts = async (req, res) => {
     try {
-        const products = await Product.find({
-            active: true
-        }).sort({ createdAt: -1 })
+        const products = await Product.find().sort({ createdAt: -1 })
 
         console.log("Products fetched successfully!")
 
@@ -95,6 +93,7 @@ export const addProduct = async (req, res) => {
             dupatta,
             features,
             featured,
+            bestseller,
             active,
         } = req.body;
 
@@ -126,6 +125,7 @@ export const addProduct = async (req, res) => {
         // convert featured to boolean
         const isFeatured = featured === "true";
 
+        const isBestseller = bestseller === "true";
 
         // convert active to boolean
         const isActive = active === undefined
@@ -169,13 +169,10 @@ export const addProduct = async (req, res) => {
             flair,
             blouse,
             dupatta,
-
+            bestseller: isBestseller,
             features: productFeatures,
-
             images: imageUrls,
-
             featured: isFeatured,
-
             active: isActive,
         });
 
@@ -201,7 +198,7 @@ export const addProduct = async (req, res) => {
 export const updateProduct = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, category, description, material, flair, blouse, dupatta, features, featured, active } = req.body;
+        const { name, category, description, material, flair, blouse, dupatta, features,bestseller, featured, active } = req.body;
 
         // Find existing product
         const product = await Product.findById(id);
@@ -225,6 +222,8 @@ export const updateProduct = async (req, res) => {
 
         // convert featured
         const isFeatured = featured === undefined ? product.featured : featured === "true" || featured === true;
+
+        const isBestseller = bestseller === undefined ? product.bestseller : bestseller === "true" || bestseller === true;
 
         // convert active
         const isActive = active === undefined ? product.active : active === "true" || active === true;
@@ -279,7 +278,7 @@ export const updateProduct = async (req, res) => {
         product.flair = flair ?? product.flair;
         product.blouse = blouse ?? product.blouse;
         product.dupatta = dupatta ?? product.dupatta;
-
+        product.bestseller = isBestseller;
         product.features = productFeatures;
         product.featured = isFeatured;
         product.active = isActive;

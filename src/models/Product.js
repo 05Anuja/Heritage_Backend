@@ -59,6 +59,11 @@ const productSchema = new mongoose.Schema(
             default: false,
         },
 
+        bestseller: {
+            type: Boolean,
+            default: false,
+        },
+
         active: {
             type: Boolean,
             default: true,
